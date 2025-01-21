@@ -1,0 +1,58 @@
+<template>
+	<header class="position-fixed top-2 flex justify-between overflow-visible *:overflow-visible"
+		w="4/5"
+	>
+		
+		<select
+			class="h-4"
+			v-model="model"
+		>
+			<option
+				v-for="(item, i) in models"
+				:key="i"
+				:value="item"
+			>
+				{{ item }}
+			</option>
+		</select>
+		<div class="group position-relative">
+			<img
+				class="w-16 h-16 object-fill rounded-full"
+				src="/head.webp"
+				alt="我"
+			/>
+			<div
+				class="z-10 hidden position-absolute -translate-x-1/2"
+				group-hover="block bg-dark text-gray"
+				w="20"
+				p="2"
+				rounded="lg"
+			>
+				<div class="my-1">
+					<a
+						href="https://www.w4ter.com"
+						class="text-gray"
+						hover="text-blue"
+						>我的博客</a
+					>
+				</div>
+				<hr />
+				<div class="my-1">
+					<a
+						href="https://www.w4ter.com"
+						class="text-gray"
+						hover="text-blue"
+						>支持一下</a
+					>
+				</div>
+			</div>
+		</div>
+	</header>
+</template>
+<script setup lang="ts">
+import models from '~/assets/models.json';
+
+const model = defineModel({
+	type: String,
+});
+</script>
