@@ -6,7 +6,7 @@
 	>
 		
 		<select
-			class="h-6 px-4 bg-white border border-gray-300 rounded-md shadow-sm"
+			class="h-6 w-32 bg-white border border-gray-300 rounded-md shadow-sm"
 			m="l-2"
 			focus="outline-none border-blue-500"
 			v-model="model"
