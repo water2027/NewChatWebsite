@@ -37,6 +37,7 @@
 				<div class="my-1">
 					<a
 						href="https://www.w4ter.com"
+						target="_blank"
 						class="text-gray"
 						hover="text-blue"
 						>我的博客</a
@@ -46,6 +47,7 @@
 				<div class="my-1">
 					<a
 						href="https://www.w4ter.com"
+						target="_blank"
 						class="text-gray"
 						hover="text-blue"
 						>支持一下</a
