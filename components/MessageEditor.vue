@@ -10,6 +10,7 @@
 			w="11/12"
 			h="24"
 			p="2"
+			@keydown="handleKeydown"
 		></textarea>
 		<button
 			@click="sendMessage"
@@ -29,5 +30,13 @@ const emit = defineEmits(['message-handler']);
 const sendMessage = () => {
 	emit('message-handler', msg.value);
 	msg.value = '';
+};
+const handleKeydown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+        if (!event.shiftKey && !event.ctrlKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    }
 };
 </script>
