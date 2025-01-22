@@ -12,7 +12,7 @@
             p="2"
 		></textarea>
 		<button
-			@click="sendMsg"
+			@click="$emit('message-handler')"
 			class="bg-blue rounded-lg cursor-pointer"
             w="1/12"
             p="2"
@@ -27,7 +27,5 @@
 const msg = defineModel({
 	type: String,
 });
-const sendMsg = () => {
-	console.log(msg);
-};
+defineEmits(['message-handler']);
 </script>

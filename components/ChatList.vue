@@ -38,7 +38,7 @@
 				class="flex flex-col items-center w-4/5"
 			>
 				<div class="p-2 bg-slate-500 rounded-lg">
-					{{ chat.content }}
+					system:{{ chat.content }}
 				</div>
 			</div>
 		</div>

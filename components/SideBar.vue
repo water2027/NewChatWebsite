@@ -4,7 +4,9 @@
 		<li
 			v-for="item in sideBarList"
 			:key="item.id"
-			class="flex justify-between overflow-visible"
+			:data-type="item.type"
+			:data-id="item.id"
+			class="bar flex justify-between overflow-visible"
 			hover=" bg-slate"
 			active="bg-slate"
 			p="2"
@@ -12,7 +14,7 @@
 			rounded="lg"
 		>
 			<!-- 每行最右边应该有个省略号 -->
-			<span>{{ item.name }}</span>
+			<span class="pointer-events-none">{{ item.name }}</span>
 			<div class="group position-relative overflow-visible">
 				<Icon name="lucide:ellipsis" />
 				<div

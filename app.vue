@@ -17,6 +17,7 @@
 			>
 				<Icon
 					name="lets-icons:edit"
+					@click="createNewChat"
 					size="28"
 					class="transition-transform z-20"
 					hover="hover:text-blue-500 hover:scale-110"
@@ -43,11 +44,11 @@
 			<div
 				class="w-full"
 				:style="{ overflow: asideStatus ? 'visible' : 'hidden' }"
-				@click="editEventHandler"
+				@click="clickEventHandler"
 			>
 				<SideBar :side-bar-list="prompts" />
 				<hr />
-				<SideBar :side-bar-list="chatHistory" />
+				<SideBar :side-bar-list="chatHistory.reverse()" />
 			</div>
 		</aside>
 		<main
@@ -58,9 +59,12 @@
 				right: asideStatus ? '0' : '-10%',
 			}"
 		>
-			<MyHeader />
-			<ChatList :chats="chats" />
-			<MessageEditor v-model="msg" />
+			<MyHeader v-model="model" />
+			<ChatList :chats="currentChat" />
+			<MessageEditor
+				@message-handler="messageHandler"
+				v-model="msg"
+			/>
 		</main>
 	</div>
 </template>
@@ -87,8 +91,10 @@ const prompts = ref<Prompt[]>(
 );
 const chatHistory = ref<ChatHistory[]>([]);
 const nextId = ref(0);
-const chats = ref<Chat[]>([]);
+const currentChat = ref<Chat[]>([]);
+const currentId = ref(0);
 const msg = ref('');
+const model = ref('');
 
 // false表示没有展开，true表示已经展开
 const asideStatus = ref(true);
@@ -118,6 +124,8 @@ const widthChangeHandler = () => {
 };
 useMyHook(widthChangeHandler);
 onMounted(() => {
+	const storagePrompts = localStorage.getItem('prompts');
+	storagePrompts && (prompts.value = JSON.parse(storagePrompts) as Prompt[]);
 	const storageNextId = localStorage.getItem('nextId');
 	storageNextId && (nextId.value = Number(storageNextId));
 	const storageChatHistory = localStorage.getItem('chatHistory');
@@ -195,7 +203,10 @@ const saveData = (type: 0 | 1 | 2) => {
 			break;
 		}
 		case 1: {
-			localStorage.setItem('chatHistory', JSON.stringify(chatHistory.value));
+			localStorage.setItem(
+				'chatHistory',
+				JSON.stringify(chatHistory.value)
+			);
 			break;
 		}
 		case 2: {
@@ -205,7 +216,7 @@ const saveData = (type: 0 | 1 | 2) => {
 		default:
 			break;
 	}
-}
+};
 // 显示输入框，填写数据
 // 如果type为0，则显示两个输入框
 // 如果type为1，则显示一个输入框
@@ -227,7 +238,36 @@ const showEditor = (type: 0 | 1, id: number) => {
 			break;
 	}
 };
-const editEventHandler = (event: MouseEvent) => {
+const changeCurrentChat = (type: 0 | 1, id: number) => {
+	switch (type) {
+		case 0: {
+			createNewChat();
+			const selectedPrompt = prompts.value.find((item) => item.id === id);
+			if (!selectedPrompt) {
+				return;
+			}
+			const systemMessage: Chat = {
+				role: 'system',
+				content: selectedPrompt.content,
+			};
+			currentChat.value.push(systemMessage);
+			break;
+		}
+		case 1: {
+			const selectedChat = chatHistory.value.find(
+				(item) => item.id === id
+			);
+			if (!selectedChat) {
+				return;
+			}
+			currentChat.value = selectedChat.history;
+			break;
+		}
+		default:
+			break;
+	}
+};
+const clickEventHandler = (event: MouseEvent) => {
 	const target = event.target as HTMLElement;
 	console.log(target);
 	// 匹配类名
@@ -243,11 +283,83 @@ const editEventHandler = (event: MouseEvent) => {
 		saveData(type);
 		return;
 	}
+	if (target.classList.contains('bar')) {
+		changeCurrentChat(type, id);
+		return;
+	}
 	return;
 };
 
-
-
+const createNewChat = () => {
+	const newId = nextId.value++;
+	currentChat.value = [];
+	currentId.value = newId;
+	chatHistory.value.push({
+		type: 1,
+		id: newId,
+		name: `对话${newId}`,
+		history: [],
+	});
+	saveData(2);
+};
+const sendMessageToAI = async () => {
+	try {
+		const resp = await fetch('/api/chat', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				accept: '*/*',
+			},
+			body: JSON.stringify({
+				model: model.value || 'gpt-4',
+				messages: currentChat.value,
+			}),
+		});
+		if (!resp.ok) {
+			throw new Error(`请求失败，疑似网络原因`);
+		}
+		return resp;
+	} catch (e) {
+		throw e;
+	}
+};
+const pushMessage = (chat: Chat) => {
+	currentChat.value.push(chat);
+	chatHistory.value
+		.find((item) => item.id === currentId.value)
+		?.history.push(chat);
+	saveData(1);
+};
+const messageHandler = async () => {
+	try {
+		if (!msg.value) {
+			return;
+		}
+		pushMessage({
+			role: 'user',
+			content: msg.value,
+		});
+		const resp = await sendMessageToAI();
+		const reader = resp.body
+			?.pipeThrough(new TextDecoderStream())
+			.getReader();
+		while (true) {
+			if (!reader) {
+				throw new Error('reader未定义');
+			}
+			const { value, done } = await reader.read();
+			if (done) break;
+			msg.value += value;
+		}
+		pushMessage({
+			role: 'assistant',
+			content: msg.value,
+		});
+		msg.value = '';
+	} catch (e) {
+		console.error(e);
+	}
+};
 </script>
 <style>
 * {
