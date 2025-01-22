@@ -59,7 +59,7 @@
 				right: asideStatus ? '0' : '-10%',
 			}"
 		>
-			<MyHeader v-model="model" />
+			<MyHeader @change-model="changeModel" />
 			<ChatList
 				:chats="currentChat"
 				:next-msg="nextMsg"
@@ -103,6 +103,9 @@ const isPC = ref(true);
 const change = () => {
 	asideStatus.value = !asideStatus.value;
 };
+const changeModel = (newModel:string) => {
+	model.value = newModel;
+};
 
 const asideWidth = computed<string>(() => {
 	if (isPC.value) {
@@ -131,6 +134,7 @@ onMounted(() => {
 	const storageChatHistory = localStorage.getItem('chatHistory');
 	storageChatHistory &&
 		(chatHistory.value = JSON.parse(storageChatHistory) as ChatHistory[]);
+	createNewChat();
 });
 
 /**

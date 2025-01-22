@@ -10,6 +10,7 @@
 			m="l-2"
 			focus="outline-none border-blue-500"
 			v-model="model"
+			@change="() => $emit('changeModel', model)"
 		>
 			<option
 				v-for="(item, i) in models"
@@ -57,7 +58,10 @@
 <script setup lang="ts">
 import models from '~/assets/models.json';
 
-const model = defineModel({
-	type: String,
+const emit = defineEmits(['changeModel']);
+const model = ref(models[0]);
+const sendModel = () => emit('changeModel', model.value);
+onMounted(() => {
+	sendModel();
 });
 </script>
