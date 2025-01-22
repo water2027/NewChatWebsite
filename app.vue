@@ -48,7 +48,7 @@
 			>
 				<SideBar :side-bar-list="prompts" />
 				<hr />
-				<SideBar :side-bar-list="chatHistory.reverse()" />
+				<SideBar :side-bar-list="[...chatHistory].reverse()" />
 			</div>
 		</aside>
 		<main
@@ -60,11 +60,11 @@
 			}"
 		>
 			<MyHeader v-model="model" />
-			<ChatList :chats="currentChat" />
-			<MessageEditor
-				@message-handler="messageHandler"
-				v-model="msg"
+			<ChatList
+				:chats="currentChat"
+				:next-msg="nextMsg"
 			/>
+			<MessageEditor @message-handler="messageHandler" />
 		</main>
 	</div>
 </template>
@@ -93,8 +93,8 @@ const chatHistory = ref<ChatHistory[]>([]);
 const nextId = ref(0);
 const currentChat = ref<Chat[]>([]);
 const currentId = ref(0);
-const msg = ref('');
 const model = ref('');
+const nextMsg = ref('');
 
 // false表示没有展开，true表示已经展开
 const asideStatus = ref(true);
@@ -269,7 +269,6 @@ const changeCurrentChat = (type: 0 | 1, id: number) => {
 };
 const clickEventHandler = (event: MouseEvent) => {
 	const target = event.target as HTMLElement;
-	console.log(target);
 	// 匹配类名
 	const type = Number(target.getAttribute('data-type')) as 0 | 1;
 	const id = Number(target.getAttribute('data-id'));
@@ -324,20 +323,24 @@ const sendMessageToAI = async () => {
 	}
 };
 const pushMessage = (chat: Chat) => {
-	currentChat.value.push(chat);
-	chatHistory.value
-		.find((item) => item.id === currentId.value)
-		?.history.push(chat);
-	saveData(1);
-};
-const messageHandler = async () => {
 	try {
-		if (!msg.value) {
+		currentChat.value.push(chat);
+		chatHistory.value
+			.find((item) => item.id === currentId.value)
+			?.history.push(chat);
+		saveData(1);
+	} catch (e) {
+		console.error(e);
+	}
+};
+const messageHandler = async (msg: string) => {
+	try {
+		if (!msg) {
 			return;
 		}
 		pushMessage({
 			role: 'user',
-			content: msg.value,
+			content: msg,
 		});
 		const resp = await sendMessageToAI();
 		const reader = resp.body
@@ -349,13 +352,13 @@ const messageHandler = async () => {
 			}
 			const { value, done } = await reader.read();
 			if (done) break;
-			msg.value += value;
+			nextMsg.value += value;
 		}
 		pushMessage({
 			role: 'assistant',
-			content: msg.value,
+			content: nextMsg.value,
 		});
-		msg.value = '';
+		nextMsg.value = '';
 	} catch (e) {
 		console.error(e);
 	}

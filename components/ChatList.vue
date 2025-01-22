@@ -63,9 +63,6 @@ export interface Chat {
 }
 defineProps<{
 	chats: Chat[];
+	nextMsg:string;
 }>();
-const nextMsg = defineModel({
-	type: String,
-	default: '',
-});
 </script>
