@@ -1,38 +1,49 @@
 <template>
 	<div class="flex w-screen h-screen p-1 bg-gray">
 		<aside
-			class="fixed h-screen transition-all duration-300 overflow-visible"
+			class="fixed h-screen transition-all duration-300 overflow-visible z-50 bg-slate-600"
 			left="0"
-			:style="{ width: asideStatus ? '20%' : '0' }"
+			:style="{ width: asideWidth }"
 		>
-			<div class="flex justify-between p-2 overflow-visible w-full transition-all duration-300"
-			:style="{ width: asideStatus ? '100%' : '4.5rem' }"
+			<!-- 图标组 -->
+			<div
+				class="flex p-2 overflow-visible transition-all duration-300"
+				:style="{
+					width: asideStatus ? '100%' : '4.5rem',
+					height: asideStatus ? '' : '4.5rem',
+					flexDirection: isPC ? 'row' : 'column',
+					justifyContent: isPC ? 'space-between' : 'center',
+				}"
 			>
 				<Icon
 					name="lets-icons:edit"
 					size="28"
-					class="hover:text-blue-500 hover:scale-110 transition-transform"
+					class="transition-transform z-20"
+					hover="hover:text-blue-500 hover:scale-110"
 				/>
-				<ClientOnly>
-					<!-- 收缩 -->
-					<Icon
-						v-if="!asideStatus"
-						@click="change"
-						name="icon-park-outline:expand-left"
-						size="28"
-						class="hover:text-blue-500 hover:scale-110 transition-transform"
-					/>
-					<!-- 展开 -->
-					<Icon
-						v-else
-						@click="change"
-						name="icon-park-outline:expand-right"
-						size="28"
-						class="hover:text-blue-500 hover:scale-110 transition-transform"
-					/>
-				</ClientOnly>
+				<!-- 收缩 -->
+				<Icon
+					v-if="!asideStatus"
+					@click="change"
+					name="icon-park-outline:expand-left"
+					size="28"
+					class="transition-transform z-20"
+					hover="hover:text-blue-500 hover:scale-110"
+				/>
+				<!-- 展开 -->
+				<Icon
+					v-else
+					@click="change"
+					name="icon-park-outline:expand-right"
+					size="28"
+					class="transition-transform z-20"
+					hover="hover:text-blue-500 hover:scale-110"
+				/>
 			</div>
-			<div class="w-full overflow-hidden">
+			<div
+				class="w-full"
+				:style="{ overflow: asideStatus ? 'visible' : 'hidden' }"
+			>
 				<SideBar :side-bar-list="prompts" />
 				<hr />
 				<SideBar :side-bar-list="chatHistory" />
@@ -41,7 +52,10 @@
 		<main
 			class="fixed h-screen transition-all duration-300"
 			right="0"
-			:style="{ width: asideStatus ? '80%' : '100%', right: asideStatus ? '0' : '-10%' }"
+			:style="{
+				width: asideStatus ? '80%' : '100%',
+				right: asideStatus ? '0' : '-10%',
+			}"
 		>
 			<MyHeader />
 			<ChatList :chats="chats" />
@@ -50,6 +64,8 @@
 	</div>
 </template>
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import type { SideBarProp } from './components/SideBar.vue';
 import type { Chat } from '~/components/ChatList.vue';
 
@@ -73,7 +89,7 @@ const chats: Chat[] = [
 	{
 		role: 'assistant',
 		content:
-			'Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?Hello, how can I help you?',
+			'```js\nconsole.log("hello")',
 	},
 	{
 		role: 'user',
@@ -110,18 +126,27 @@ const change = () => {
 	asideStatus.value = !asideStatus.value;
 };
 
+const asideWidth = computed<string>(() => {
+	if (isPC.value) {
+		return asideStatus.value ? '20%' : '0';
+	} else {
+		return asideStatus.value ? '80%' : '0';
+	}
+});
+
 onMounted(() => {
+	widthChangeHandler();
 	if (!isPC.value) {
 		asideStatus.value = false;
 	}
 });
 
 const widthChangeHandler = () => {
-	if (window.innerWidth < 768) {
-		isPC.value = false;
-	} else {
-		isPC.value = true;
+	const newStatus = window.innerWidth < 768 ? false : true;
+	if (newStatus == isPC.value) {
+		return;
 	}
+	isPC.value = newStatus;
 };
 useMyHook(widthChangeHandler);
 </script>

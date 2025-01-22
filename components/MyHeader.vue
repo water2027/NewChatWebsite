@@ -1,10 +1,14 @@
 <template>
-	<header class="position-fixed top-2 flex justify-between overflow-visible *:overflow-visible"
-		w="4/5"
+	<header class="position-fixed flex justify-between overflow-visible *:overflow-visible"
+	top="2"
+	right="0"
+	w="4/5"
 	>
 		
 		<select
-			class="h-4"
+			class="h-6 px-4 bg-white border border-gray-300 rounded-md shadow-sm"
+			m="l-2"
+			focus="outline-none border-blue-500"
 			v-model="model"
 		>
 			<option
@@ -15,7 +19,7 @@
 				{{ item }}
 			</option>
 		</select>
-		<div class="group position-relative">
+		<div class="group position-relative" m="r-2">
 			<img
 				class="w-16 h-16 object-fill rounded-full"
 				src="/head.webp"
@@ -24,6 +28,7 @@
 			<div
 				class="z-10 hidden position-absolute -translate-x-1/2"
 				group-hover="block bg-dark text-gray"
+				group-active="block bg-dark text-gray"
 				w="20"
 				p="2"
 				rounded="lg"

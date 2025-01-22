@@ -24,6 +24,7 @@
 			<div
 				v-else-if="chat.role === 'user'"
 				class="flex flex-col items-end w-4/5"
+				m="l-a r-12"
 			>
 				<div class="flex items-center">
 					<span class="mr-2 text-white">User</span>

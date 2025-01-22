@@ -1,10 +1,10 @@
 <template>
-  <div
-    id="content"
-    ref="content"
-    class="markdown-body"
-    v-html="safeHTML"
-  ></div>
+	<div
+		id="content"
+		ref="content"
+		class="markdown-body w-full max-w-full h-a text-2xl overflow-hidden break-all"
+		v-html="safeHTML"
+	></div>
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
@@ -13,7 +13,29 @@ import MarkdownIt from 'markdown-it';
 import mk from 'markdown-it-katex';
 import hljs from 'highlight.js/lib/core';
 
+import c from 'highlight.js/lib/languages/c';
+import cpp from 'highlight.js/lib/languages/cpp';
+import html from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import python from 'highlight.js/lib/languages/python';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import rust from 'highlight.js/lib/languages/rust';
+import java from 'highlight.js/lib/languages/java';
+import go from 'highlight.js/lib/languages/go';
+
 import('highlight.js/styles/atom-one-dark.css');
+
+hljs.registerLanguage('c', c);
+hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('html', html);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('rust', rust);
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('go', go);
 
 const props = defineProps({
 	markdownContent: {
@@ -30,14 +52,23 @@ const md: MarkdownIt = new MarkdownIt({
 	highlight: (str, lang) => {
 		if (lang && hljs.getLanguage(lang)) {
 			try {
-				return `<pre class="hljs"><code>${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`;
+				return `<pre class="hljs"><code>${
+					hljs.highlight(str, {
+						language: lang,
+						ignoreIllegals: true,
+					}).value
+				}</code></pre>`;
 			} catch (__) {}
 		} else {
 			try {
-				return `<pre class="hljs"><code>${hljs.highlightAuto(str).value}</code></pre>`;
+				return `<pre class="hljs"><code>${
+					hljs.highlightAuto(str).value
+				}</code></pre>`;
 			} catch (__) {}
 		}
-		return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
+		return `<pre class="hljs"><code>${md.utils.escapeHtml(
+			str
+		)}</code></pre>`;
 	},
 	xhtmlOut: true,
 	langPrefix: 'language-',
@@ -73,14 +104,8 @@ const safeHTML = computed(() => {
 }
 
 #content {
-	width: 100%;
-	max-width: 100%;
-	height: auto;
-	font-size: 23px;
-	overflow: hidden;
 	overflow-wrap: break-word;
 	word-wrap: break-word;
-	word-break: break-all;
 }
 
 :deep(li) {

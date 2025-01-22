@@ -1,11 +1,12 @@
 <template>
 	<div
-		class="items-center position-fixed bottom-2 w-4/5 bg-slate-400"
+		class="items-center position-fixed bottom-2 w-4/5"
         flex="~ row"
 	>
 		<textarea
 			v-model="msg"
-			class="bg-slate-500 rounded-lg overflow-auto"
+			class="bg-slate-500 rounded-lg overflow-auto resize-none"
+			m="l-1"
             w="11/12"
             h="24"
             p="2"

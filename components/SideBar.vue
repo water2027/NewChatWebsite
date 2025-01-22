@@ -6,6 +6,7 @@
 			:key="item.id"
 			class="flex justify-between overflow-visible"
 			hover=" bg-slate"
+			active="bg-slate"
 			p="2"
 			m="1"
 			rounded="lg"
@@ -17,6 +18,7 @@
 				<div
 					class="z-10 hidden position-absolute -translate-x-2/3"
 					group-hover="block bg-dark text-gray"
+					group-active="block bg-dark text-gray"
 					w="16"
 					p="2"
 					rounded="lg"
@@ -24,6 +26,7 @@
 					<div
 						class="event flex cursor-pointer"
 						hover="text-blue"
+						active="text-blue"
 					>
 						<Icon name="material-symbols:edit" />
 						编辑
@@ -32,6 +35,7 @@
 					<div
 						class="event flex cursor-pointer"
 						hover="text-red"
+						active="text-red"
 					>
 						<Icon name="ic:baseline-delete-forever" />
 						删除
