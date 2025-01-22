@@ -1,3 +1,11 @@
 [
-    "asd","qwe"
+	"chatgpt-4o-latest",
+    "claude-3-5-sonnet-20241022",
+	"gpt-4-turbo",
+	"gpt-4-all",
+	"gpt-4o-all",
+	"gpt-4o-mini",
+	"o1-all",
+	"o1-mini-all",
+	"o1-pro-all"
 ]
