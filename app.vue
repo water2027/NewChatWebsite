@@ -43,6 +43,7 @@
 			<div
 				class="w-full"
 				:style="{ overflow: asideStatus ? 'visible' : 'hidden' }"
+				@click="editEventHandler"
 			>
 				<SideBar :side-bar-list="prompts" />
 				<hr />
@@ -71,51 +72,22 @@ import type { Chat } from '~/components/ChatList.vue';
 
 import { useMyHook } from '#imports';
 
-const prompts: SideBarProp[] = [
-	{
-		name: 'test1',
-		id: '1',
-		type: 'test',
-	},
-];
-const chatHistory: SideBarProp[] = [
-	{
-		name: 'test2',
-		id: '2',
-		type: 'test',
-	},
-];
-const chats: Chat[] = [
-	{
-		role: 'assistant',
-		content:
-			'```js\nconsole.log("hello")',
-	},
-	{
-		role: 'user',
-		content: 'I have a problem with my account.',
-	},
-	{
-		role: 'assistant',
-		content: 'What seems to be the problem?',
-	},
-	{
-		role: 'user',
-		content: 'I have a problem with my account.',
-	},
-	{
-		role: 'assistant',
-		content: 'What seems to be the problem?',
-	},
-	{
-		role: 'user',
-		content: 'I have a problem with my account.',
-	},
-	{
-		role: 'assistant',
-		content: 'What seems to be the problem?',
-	},
-];
+import defaultPrompts from '~/assets/prompts.json';
+
+interface Prompt extends SideBarProp {
+	content: string;
+}
+
+interface ChatHistory extends SideBarProp {
+	history: Chat[];
+}
+
+const prompts = ref<Prompt[]>(
+	defaultPrompts.map((item) => ({ ...item, type: 0 }))
+);
+const chatHistory = ref<ChatHistory[]>([]);
+const nextId = ref(0);
+const chats = ref<Chat[]>([]);
 const msg = ref('');
 
 // false表示没有展开，true表示已经展开
@@ -134,21 +106,148 @@ const asideWidth = computed<string>(() => {
 	}
 });
 
-onMounted(() => {
-	widthChangeHandler();
-	if (!isPC.value) {
-		asideStatus.value = false;
-	}
-});
-
 const widthChangeHandler = () => {
 	const newStatus = window.innerWidth < 768 ? false : true;
 	if (newStatus == isPC.value) {
 		return;
 	}
 	isPC.value = newStatus;
+	if (!isPC.value) {
+		asideStatus.value = false;
+	}
 };
 useMyHook(widthChangeHandler);
+onMounted(() => {
+	const storageNextId = localStorage.getItem('nextId');
+	storageNextId && (nextId.value = Number(storageNextId));
+	const storageChatHistory = localStorage.getItem('chatHistory');
+	storageChatHistory &&
+		(chatHistory.value = JSON.parse(storageChatHistory) as ChatHistory[]);
+});
+
+/**
+ *
+ * @param type 0为prompt;1为chatHistory
+ * @param id
+ * @param name
+ * @param prompt
+ */
+const editData = (
+	type: 0 | 1,
+	id: number,
+	name: string | null,
+	prompt: string | null
+) => {
+	switch (type) {
+		case 0: {
+			const index = prompts.value.findIndex((item) => item.id === id);
+			if (index === -1) {
+				return;
+			}
+			if (name) {
+				prompts.value[index].name = name;
+			}
+			if (prompt) {
+				prompts.value[index].content = prompt;
+			}
+			break;
+		}
+		case 1: {
+			const index = chatHistory.value.findIndex((item) => item.id === id);
+			if (index === -1) {
+				return;
+			}
+			if (name) {
+				chatHistory.value[index].name = name;
+			}
+			break;
+		}
+		default:
+			break;
+	}
+};
+const deleteData = (type: 0 | 1, id: number) => {
+	switch (type) {
+		case 0: {
+			const index = prompts.value.findIndex((item) => item.id === id);
+			if (index === -1) {
+				return;
+			}
+			prompts.value.splice(index, 1);
+			break;
+		}
+		case 1: {
+			const index = chatHistory.value.findIndex((item) => item.id === id);
+			if (index === -1) {
+				return;
+			}
+			chatHistory.value.splice(index, 1);
+			break;
+		}
+		default:
+			break;
+	}
+};
+const saveData = (type: 0 | 1 | 2) => {
+	switch (type) {
+		case 0: {
+			localStorage.setItem('prompts', JSON.stringify(prompts.value));
+			break;
+		}
+		case 1: {
+			localStorage.setItem('chatHistory', JSON.stringify(chatHistory.value));
+			break;
+		}
+		case 2: {
+			localStorage.setItem('nextId', String(nextId.value));
+			break;
+		}
+		default:
+			break;
+	}
+}
+// 显示输入框，填写数据
+// 如果type为0，则显示两个输入框
+// 如果type为1，则显示一个输入框
+// 使用prompt弹窗获取数据，哪天想改了再改
+const showEditor = (type: 0 | 1, id: number) => {
+	switch (type) {
+		case 0: {
+			const newName = prompt('请输入名称');
+			const newPrompt = prompt('请输入内容');
+			editData(type, id, newName, newPrompt);
+			break;
+		}
+		case 1: {
+			const newName = prompt('请输入名称');
+			editData(type, id, newName, null);
+			break;
+		}
+		default:
+			break;
+	}
+};
+const editEventHandler = (event: MouseEvent) => {
+	const target = event.target as HTMLElement;
+	console.log(target);
+	// 匹配类名
+	const type = Number(target.getAttribute('data-type')) as 0 | 1;
+	const id = Number(target.getAttribute('data-id'));
+	if (target.classList.contains('edit')) {
+		showEditor(type, id);
+		saveData(type);
+		return;
+	}
+	if (target.classList.contains('delete')) {
+		deleteData(type, id);
+		saveData(type);
+		return;
+	}
+	return;
+};
+
+
+
 </script>
 <style>
 * {
