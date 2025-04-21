@@ -1,13 +1,13 @@
 <template>
-	<div class="flex w-screen h-screen p-1 bg-gray">
+	<div class="flex w-screen h-screen bg-gray">
 		<aside
-			class="fixed h-screen transition-all duration-300 overflow-visible z-50 bg-slate-600"
+			class="h-screen transition-all duration-300 overflow-visible z-50 bg-slate-600"
 			left="0"
 			:style="{ width: asideWidth }"
 		>
 			<!-- 图标组 -->
 			<div
-				class="flex p-2 overflow-visible transition-all duration-300"
+				class="flex p-2 transition-all duration-300"
 				:style="{
 					width: asideStatus ? '100%' : '4.5rem',
 					height: asideStatus ? '' : '4.5rem',
@@ -52,7 +52,7 @@
 			</div>
 		</aside>
 		<main
-			class="fixed h-screen transition-all duration-300"
+			class="flex flex-col h-screen transition-all duration-300"
 			right="0"
 			:style="{
 				width: asideStatus ? '80%' : '100%',
@@ -64,7 +64,7 @@
 				:chats="currentChat"
 				:next-msg="nextMsg"
 			/>
-			<MessageEditor @message-handler="messageHandler" />
+			<MessageEditor class="mx-a mt-a mb-2" @message-handler="messageHandler" />
 		</main>
 	</div>
 </template>
@@ -103,7 +103,7 @@ const isPC = ref(true);
 const change = () => {
 	asideStatus.value = !asideStatus.value;
 };
-const changeModel = (newModel:string) => {
+const changeModel = (newModel: string) => {
 	model.value = newModel;
 };
 
@@ -373,6 +373,9 @@ const messageHandler = async (msg: string) => {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+}
+html,
+body {
 	overflow: hidden;
 }
 a {

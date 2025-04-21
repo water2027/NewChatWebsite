@@ -1,5 +1,5 @@
 <template>
-	<header class="position-fixed flex justify-between overflow-visible *:overflow-visible"
+	<header class="flex justify-between mx-a"
 	top="2"
 	right="0"
 	w="4/5"

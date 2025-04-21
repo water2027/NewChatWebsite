@@ -1,5 +1,5 @@
 <template>
-	<div class="overflow-auto mt-8 h-[75vh]" @click="clickHandler">
+	<div class="overflow-auto w-full h-[75vh]" @click="clickHandler">
 		<div
 			v-for="chat, index in chats"
 			:key="index + chat.content.slice(0, 10)"
