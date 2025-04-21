@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       ]
     }
   },
-	modules: ['@unocss/nuxt', 'nuxt-icon', '@vite-pwa/nuxt'],
+	modules: ['@unocss/nuxt', '@vite-pwa/nuxt', '@nuxt/icon'],
 	devtools: { enabled: true },
 	compatibilityDate: '2025-01-21',
 	pwa: {

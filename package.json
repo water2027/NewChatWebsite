@@ -28,7 +28,6 @@
     "@iconify-json/ri": "^1.2.5",
     "@nuxt/icon": "^1.10.3",
     "@unocss/nuxt": "^65.4.2",
-    "nuxt-icon": "1.0.0-beta.7",
     "unocss": "^65.4.2"
   }
 }
