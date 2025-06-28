@@ -18,8 +18,8 @@
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "markdown-it-katex": "^2.0.3",
-    "nuxt": "^3.15.2",
-    "openai": "^4.79.1",
+    "nuxt": "^3.17.5",
+    "openai": "^4.104.0",
     "prismjs": "^1.30.0",
     "vue": "latest",
     "vue-router": "latest"
@@ -29,15 +29,15 @@
     "@iconify-json/ic": "^1.2.2",
     "@iconify-json/icon-park-outline": "^1.2.2",
     "@iconify-json/lets-icons": "^1.2.1",
-    "@iconify-json/lucide": "^1.2.24",
-    "@iconify-json/material-symbols": "^1.2.12",
+    "@iconify-json/lucide": "^1.2.53",
+    "@iconify-json/material-symbols": "^1.2.28",
     "@iconify-json/ri": "^1.2.5",
-    "@nuxt/icon": "^1.10.3",
+    "@nuxt/icon": "^1.14.0",
     "@types/markdown-it": "^14.1.2",
-    "@unocss/eslint-plugin": "^66.2.3",
-    "@unocss/nuxt": "^65.4.2",
-    "eslint": "^9.29.0",
+    "@unocss/eslint-plugin": "^66.3.2",
+    "@unocss/nuxt": "^66.3.2",
+    "eslint": "^9.30.0",
     "eslint-plugin-format": "^1.0.1",
-    "unocss": "^65.4.2"
+    "unocss": "^66.3.2"
   }
 }
