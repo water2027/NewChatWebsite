@@ -1,25 +1,31 @@
 {
   "name": "nuxt-app",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@types/prismjs": "^1.26.5",
     "@vite-pwa/nuxt": "0.10.6",
+    "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "markdown-it-katex": "^2.0.3",
     "nuxt": "^3.15.2",
     "openai": "^4.79.1",
+    "prismjs": "^1.30.0",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^4.16.1",
     "@iconify-json/ic": "^1.2.2",
     "@iconify-json/icon-park-outline": "^1.2.2",
     "@iconify-json/lets-icons": "^1.2.1",
@@ -27,7 +33,11 @@
     "@iconify-json/material-symbols": "^1.2.12",
     "@iconify-json/ri": "^1.2.5",
     "@nuxt/icon": "^1.10.3",
+    "@types/markdown-it": "^14.1.2",
+    "@unocss/eslint-plugin": "^66.2.3",
     "@unocss/nuxt": "^65.4.2",
+    "eslint": "^9.29.0",
+    "eslint-plugin-format": "^1.0.1",
     "unocss": "^65.4.2"
   }
 }

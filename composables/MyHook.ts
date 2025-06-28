@@ -1,12 +1,12 @@
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue'
 
 export function useMyHook(callback: () => void) {
-	onMounted(() => {
-		callback();
-		window.addEventListener('click', callback);
-	});
+  onMounted(() => {
+    callback()
+    window.addEventListener('click', callback)
+  })
 
-	onUnmounted(() => {
-		window.removeEventListener('click', callback);
-	});
+  onUnmounted(() => {
+    window.removeEventListener('click', callback)
+  })
 }
