@@ -20,7 +20,6 @@ const client = new OpenAI({
 })
 
 export default defineEventHandler(async (event) => {
-  console.log(baseURL, apiKey)
   const { res } = event.node
   const body: EventBody = await readBody(event)
   // res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -35,12 +34,9 @@ export default defineEventHandler(async (event) => {
       messages,
       stream: true,
     })
-    console.log(response)
     try {
       for await (const chunk of response) {
-        console.log(chunk)
         const value = chunk.choices[0].delta.content
-        console.log(value)
         value && res.write(chunk.choices[0].delta.content)
       }
     }
